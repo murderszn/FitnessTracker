@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { insertGoalSchema, type InsertGoal, type MuscleGroup } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -18,7 +18,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 export default function GoalForm() {
   const { toast } = useToast();
   const [date, setDate] = useState<Date>();
-  
+
   const { data: muscleGroups } = useQuery<MuscleGroup[]>({ 
     queryKey: ["/api/muscle-groups"]
   });
@@ -30,6 +30,7 @@ export default function GoalForm() {
       type: "reps",
       description: "",
       targetValue: 0,
+      deadline: null,
     },
   });
 
@@ -47,6 +48,13 @@ export default function GoalForm() {
       form.reset();
       setDate(undefined);
     },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to create goal",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
 
   return (
@@ -55,7 +63,7 @@ export default function GoalForm() {
         onSubmit={form.handleSubmit((data) => {
           createGoal.mutate({
             ...data,
-            deadline: date?.toISOString(),
+            deadline: date || null,
           });
         })}
         className="space-y-4"
@@ -177,7 +185,14 @@ export default function GoalForm() {
           className="w-full button-hover"
           disabled={createGoal.isPending}
         >
-          Create Goal
+          {createGoal.isPending ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Creating...
+            </>
+          ) : (
+            'Create Goal'
+          )}
         </Button>
       </form>
     </Form>
