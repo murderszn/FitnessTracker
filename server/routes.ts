@@ -34,21 +34,6 @@ export async function registerRoutes(app: Express) {
     res.json(muscleGroups);
   });
 
-  // Workout routes
-  app.get("/api/workouts", async (req, res) => {
-    const workouts = await storage.getWorkouts();
-    res.json(workouts);
-  });
-
-  app.post("/api/workouts", async (req, res) => {
-    const parsed = insertWorkoutSchema.safeParse(req.body);
-    if (!parsed.success) {
-      return res.status(400).json({ error: parsed.error });
-    }
-    const workout = await storage.createWorkout(parsed.data);
-    res.json(workout);
-  });
-
   // Goal routes
   app.get("/api/goals", async (req, res) => {
     const goals = await storage.getGoals();

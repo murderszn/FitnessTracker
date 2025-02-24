@@ -10,11 +10,11 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Workout } from "@shared/schema";
+import type { Exercise } from "@shared/schema";
 
 export default function History() {
-  const { data: workouts, isLoading } = useQuery<Workout[]>({ 
-    queryKey: ["/api/workouts"]
+  const { data: exercises, isLoading } = useQuery<Exercise[]>({ 
+    queryKey: ["/api/exercises"]
   });
 
   if (isLoading) {
@@ -24,7 +24,7 @@ export default function History() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Workout History</CardTitle>
+        <CardTitle>Exercise History</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
@@ -32,19 +32,21 @@ export default function History() {
             <TableRow>
               <TableHead>Date</TableHead>
               <TableHead>Exercise</TableHead>
-              <TableHead>Duration</TableHead>
-              <TableHead>Intensity</TableHead>
+              <TableHead>Sets</TableHead>
+              <TableHead>Reps</TableHead>
+              <TableHead>Total Reps</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {workouts?.map((workout) => (
-              <TableRow key={workout.id}>
+            {exercises?.map((exercise) => (
+              <TableRow key={exercise.id}>
                 <TableCell>
-                  {format(new Date(workout.date), "MMM d, yyyy")}
+                  {format(new Date(exercise.date), "MMM d, yyyy")}
                 </TableCell>
-                <TableCell>{workout.exerciseType}</TableCell>
-                <TableCell>{workout.duration} min</TableCell>
-                <TableCell>{workout.intensity}/5</TableCell>
+                <TableCell>{exercise.name}</TableCell>
+                <TableCell>{exercise.sets}</TableCell>
+                <TableCell>{exercise.reps}</TableCell>
+                <TableCell>{exercise.sets * exercise.reps}</TableCell>
               </TableRow>
             ))}
           </TableBody>
