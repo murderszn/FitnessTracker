@@ -9,35 +9,85 @@ import History from "@/pages/History";
 import Goals from "@/pages/Goals";
 import Analytics from "@/pages/Analytics";
 import NotFound from "@/pages/not-found";
+import { motion, AnimatePresence } from "framer-motion";
+
+const pageVariants = {
+  initial: { opacity: 0, y: 20 },
+  enter: { 
+    opacity: 1, 
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.645, 0.045, 0.355, 1.000]
+    }
+  },
+  exit: { 
+    opacity: 0,
+    y: -20,
+    transition: {
+      duration: 0.3
+    }
+  }
+};
 
 function Router() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-white to-slate-50">
+      <div className="fixed inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-500/20 via-sky-500/5 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-purple-500/10 via-transparent to-transparent pointer-events-none" />
+      </div>
       <Navigation />
-      <Switch>
-        <Route path="/" component={Landing} />
-        <Route path="/dashboard">
-          <main className="container mx-auto px-4 py-6">
-            <Dashboard />
-          </main>
-        </Route>
-        <Route path="/history">
-          <main className="container mx-auto px-4 py-6">
-            <History />
-          </main>
-        </Route>
-        <Route path="/goals">
-          <main className="container mx-auto px-4 py-6">
-            <Goals />
-          </main>
-        </Route>
-        <Route path="/analytics">
-          <main className="container mx-auto px-4 py-6">
-            <Analytics />
-          </main>
-        </Route>
-        <Route component={NotFound} />
-      </Switch>
+      <AnimatePresence mode="wait">
+        <Switch>
+          <Route path="/" component={Landing} />
+          <Route path="/dashboard">
+            <motion.main 
+              className="container mx-auto px-6 py-8 relative"
+              initial="initial"
+              animate="enter"
+              exit="exit"
+              variants={pageVariants}
+            >
+              <Dashboard />
+            </motion.main>
+          </Route>
+          <Route path="/history">
+            <motion.main 
+              className="container mx-auto px-6 py-8 relative"
+              initial="initial"
+              animate="enter"
+              exit="exit"
+              variants={pageVariants}
+            >
+              <History />
+            </motion.main>
+          </Route>
+          <Route path="/goals">
+            <motion.main 
+              className="container mx-auto px-6 py-8 relative"
+              initial="initial"
+              animate="enter"
+              exit="exit"
+              variants={pageVariants}
+            >
+              <Goals />
+            </motion.main>
+          </Route>
+          <Route path="/analytics">
+            <motion.main 
+              className="container mx-auto px-6 py-8 relative"
+              initial="initial"
+              animate="enter"
+              exit="exit"
+              variants={pageVariants}
+            >
+              <Analytics />
+            </motion.main>
+          </Route>
+          <Route component={NotFound} />
+        </Switch>
+      </AnimatePresence>
       <Toaster />
     </div>
   );

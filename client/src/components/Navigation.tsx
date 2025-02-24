@@ -1,6 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { Home, History, Target, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
@@ -17,15 +18,15 @@ export default function Navigation() {
 
   return (
     <motion.nav 
-      className="border-b backdrop-blur-sm bg-background/80 sticky top-0 z-50"
+      className="sticky top-0 z-50 backdrop-blur-xl bg-white/60 border-b border-slate-200/50 shadow-sm"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 100 }}
     >
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-6">
         <div className="flex h-16 items-center justify-between">
           <motion.div 
-            className="font-bold text-xl text-[hsl(var(--azure))]"
+            className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-600"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -33,7 +34,7 @@ export default function Navigation() {
             FitTrack
           </motion.div>
 
-          <div className="flex space-x-1">
+          <div className="flex space-x-2">
             {links.map(({ href, label, icon: Icon }, index) => {
               const isActive = location === href;
               return (
@@ -45,12 +46,17 @@ export default function Navigation() {
                 >
                   <Link href={href}>
                     <a
-                      className={`
-                        nav-link
-                        ${isActive ? "active" : "hover:bg-muted"}
-                      `}
+                      className={cn(
+                        "flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
+                        "hover:bg-white/80",
+                        isActive && "bg-gradient-to-r from-blue-500 to-sky-500 text-white shadow-md",
+                        !isActive && "text-slate-600 hover:text-slate-900"
+                      )}
                     >
-                      <Icon className="h-4 w-4 mr-2" />
+                      <Icon className={cn(
+                        "h-4 w-4 mr-2 transition-colors",
+                        isActive ? "text-white" : "text-slate-400"
+                      )} />
                       {label}
                     </a>
                   </Link>
