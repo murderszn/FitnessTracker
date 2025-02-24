@@ -62,5 +62,16 @@ export async function registerRoutes(app: Express) {
     }
   });
 
+  // Recommendation routes
+  app.get("/api/recommendations", async (req, res) => {
+    const recommendations = await storage.getRecommendations();
+    res.json(recommendations);
+  });
+
+  app.post("/api/recommendations/generate", async (req, res) => {
+    const recommendations = await storage.generateRecommendations();
+    res.json(recommendations);
+  });
+
   return createServer(app);
 }

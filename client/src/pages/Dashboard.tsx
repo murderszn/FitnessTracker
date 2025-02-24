@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import WorkoutEntry from "@/components/WorkoutEntry";
 import ExerciseTotals from "@/components/ExerciseTotals";
+import WorkoutRecommendations from "@/components/WorkoutRecommendations";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { MuscleGroup } from "@shared/schema";
 
@@ -14,14 +15,18 @@ export default function Dashboard() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Fitness Dashboard</h1>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Log Exercise</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <WorkoutEntry />
-        </CardContent>
-      </Card>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Log Exercise</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <WorkoutEntry />
+          </CardContent>
+        </Card>
+
+        {muscleGroups && <WorkoutRecommendations muscleGroups={muscleGroups} />}
+      </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {isLoading ? (
