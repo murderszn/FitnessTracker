@@ -5,7 +5,7 @@ import { z } from "zod";
 export const muscleGroups = pgTable("muscle_groups", {
   id: serial("id").primaryKey(),
   name: text("name").notNull().unique(),
-  restDays: integer("rest_days").notNull().default(1), // Recommended rest days between workouts
+  restDays: integer("rest_days").notNull().default(1),
 });
 
 export const exercises = pgTable("exercises", {
@@ -19,16 +19,19 @@ export const exercises = pgTable("exercises", {
 
 export const goals = pgTable("goals", {
   id: serial("id").primaryKey(),
+  muscleGroupId: integer("muscle_group_id").notNull(),
+  type: text("type").notNull(), // "reps" or "weight"
   description: text("description").notNull(),
   targetValue: integer("target_value").notNull(),
-  currentValue: integer("current_value").notNull(),
-  muscleGroupId: integer("muscle_group_id").notNull(),
+  currentValue: integer("current_value").notNull().default(0),
+  deadline: timestamp("deadline"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const recommendations = pgTable("recommendations", {
   id: serial("id").primaryKey(),
   muscleGroupId: integer("muscle_group_id").notNull(),
-  priority: integer("priority").notNull(), // 1-5 scale, 5 being highest priority
+  priority: integer("priority").notNull(),
   reason: text("reason").notNull(),
 });
 
@@ -38,7 +41,9 @@ export const insertExerciseSchema = createInsertSchema(exercises).omit({
 });
 
 export const insertGoalSchema = createInsertSchema(goals).omit({ 
-  id: true 
+  id: true,
+  currentValue: true,
+  createdAt: true
 });
 
 export type InsertExercise = z.infer<typeof insertExerciseSchema>;
