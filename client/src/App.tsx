@@ -7,6 +7,7 @@ import Landing from "@/pages/Landing";
 import Dashboard from "@/pages/Dashboard";
 import History from "@/pages/History";
 import Goals from "@/pages/Goals";
+import Analytics from "@/pages/Analytics";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -28,6 +29,11 @@ function Router() {
         <Route path="/goals">
           <main className="container mx-auto px-4 py-6">
             <Goals />
+          </main>
+        </Route>
+        <Route path="/analytics">
+          <main className="container mx-auto px-4 py-6">
+            <Analytics />
           </main>
         </Route>
         <Route component={NotFound} />

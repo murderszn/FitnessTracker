@@ -1,11 +1,12 @@
 import { Link, useLocation } from "wouter";
-import { Home, History, Target } from "lucide-react";
+import { Home, History, Target, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
   { href: "/history", label: "History", icon: History },
   { href: "/goals", label: "Goals", icon: Target },
+  { href: "/analytics", label: "Analytics", icon: TrendingUp },
 ];
 
 export default function Navigation() {

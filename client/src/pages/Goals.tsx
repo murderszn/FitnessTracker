@@ -3,13 +3,13 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { Goal } from "@shared/schema";
 
 export default function Goals() {
   const { toast } = useToast();
   const { data: goals, isLoading } = useQuery<Goal[]>({ queryKey: ["/api/goals"] });
-  
+
   const updateGoal = useMutation({
     mutationFn: async (goal: Goal) => {
       const res = await apiRequest("PATCH", `/api/goals/${goal.id}`, goal);
@@ -30,7 +30,7 @@ export default function Goals() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Fitness Goals</h1>
-      
+
       <div className="grid gap-4 md:grid-cols-2">
         {goals?.map((goal) => (
           <Card key={goal.id}>
@@ -44,7 +44,7 @@ export default function Goals() {
                 />
                 <div className="flex items-center justify-between">
                   <span>
-                    {goal.currentValue} / {goal.targetValue} {goal.type}
+                    {goal.currentValue} / {goal.targetValue}
                   </span>
                   <Button 
                     onClick={() => handleIncrement(goal)}
