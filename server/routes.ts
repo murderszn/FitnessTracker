@@ -1,9 +1,39 @@
 import type { Express } from "express";
 import { createServer } from "http";
 import { storage } from "./storage";
-import { insertWorkoutSchema, insertGoalSchema } from "@shared/schema";
+import { insertExerciseSchema, insertGoalSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express) {
+  // Exercise routes
+  app.get("/api/exercises", async (req, res) => {
+    const exercises = await storage.getExercises();
+    res.json(exercises);
+  });
+
+  app.get("/api/exercises/muscle-group/:id", async (req, res) => {
+    const muscleGroupId = parseInt(req.params.id);
+    if (isNaN(muscleGroupId)) {
+      return res.status(400).json({ error: "Invalid muscle group ID" });
+    }
+    const exercises = await storage.getExercisesByMuscleGroup(muscleGroupId);
+    res.json(exercises);
+  });
+
+  app.post("/api/exercises", async (req, res) => {
+    const parsed = insertExerciseSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: parsed.error });
+    }
+    const exercise = await storage.createExercise(parsed.data);
+    res.json(exercise);
+  });
+
+  // Muscle Groups route
+  app.get("/api/muscle-groups", async (req, res) => {
+    const muscleGroups = await storage.getMuscleGroups();
+    res.json(muscleGroups);
+  });
+
   // Workout routes
   app.get("/api/workouts", async (req, res) => {
     const workouts = await storage.getWorkouts();

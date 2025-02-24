@@ -1,44 +1,42 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
-import { insertWorkoutSchema, type InsertWorkout } from "@shared/schema";
+import { insertExerciseSchema, type InsertExercise, type MuscleGroup } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-
-const exerciseTypes = [
-  "Running",
-  "Cycling",
-  "Swimming",
-  "Weight Training",
-  "Yoga",
-  "HIIT",
-];
 
 export default function WorkoutEntry() {
   const { toast } = useToast();
-  
-  const form = useForm<InsertWorkout>({
-    resolver: zodResolver(insertWorkoutSchema),
+  const { data: muscleGroups } = useQuery<MuscleGroup[]>({ 
+    queryKey: ["/api/muscle-groups"]
+  });
+
+  const form = useForm<InsertExercise>({
+    resolver: zodResolver(insertExerciseSchema),
     defaultValues: {
-      exerciseType: "",
-      duration: 30,
-      intensity: 3,
+      name: "",
+      muscleGroupId: 0,
+      sets: 3,
+      reps: 10,
     },
   });
 
-  const createWorkout = useMutation({
-    mutationFn: async (data: InsertWorkout) => {
-      const res = await apiRequest("POST", "/api/workouts", data);
+  const createExercise = useMutation({
+    mutationFn: async (data: InsertExercise) => {
+      const res = await apiRequest("POST", "/api/exercises", data);
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/workouts"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/exercises"] });
+      queryClient.invalidateQueries({ 
+        queryKey: ["/api/exercises/muscle-group"]
+      });
       toast({
-        title: "Workout logged successfully!",
+        title: "Exercise logged successfully!",
         description: "Your progress has been recorded.",
       });
       form.reset();
@@ -48,28 +46,41 @@ export default function WorkoutEntry() {
   return (
     <Form {...form}>
       <form 
-        onSubmit={form.handleSubmit((data) => createWorkout.mutate(data))}
+        onSubmit={form.handleSubmit((data) => createExercise.mutate(data))}
         className="space-y-4"
       >
         <FormField
           control={form.control}
-          name="exerciseType"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Exercise Type</FormLabel>
+              <FormLabel>Exercise Name</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="e.g., Squats" />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="muscleGroupId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Muscle Group</FormLabel>
               <Select 
-                onValueChange={field.onChange} 
-                defaultValue={field.value}
+                onValueChange={(value) => field.onChange(parseInt(value))} 
+                defaultValue={field.value.toString()}
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select exercise type" />
+                    <SelectValue placeholder="Select muscle group" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {exerciseTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type}
+                  {muscleGroups?.map((group) => (
+                    <SelectItem key={group.id} value={group.id.toString()}>
+                      {group.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -78,48 +89,50 @@ export default function WorkoutEntry() {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="duration"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Duration (minutes)</FormLabel>
-              <FormControl>
-                <Input 
-                  type="number" 
-                  {...field} 
-                  onChange={(e) => field.onChange(parseInt(e.target.value))}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="sets"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sets</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    min="1"
+                    {...field}
+                    onChange={(e) => field.onChange(parseInt(e.target.value))}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="intensity"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Intensity (1-5)</FormLabel>
-              <FormControl>
-                <Input 
-                  type="number" 
-                  min="1" 
-                  max="5" 
-                  {...field}
-                  onChange={(e) => field.onChange(parseInt(e.target.value))}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="reps"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Reps per Set</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    min="1"
+                    {...field}
+                    onChange={(e) => field.onChange(parseInt(e.target.value))}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
 
         <Button 
           type="submit" 
           className="w-full"
-          disabled={createWorkout.isPending}
+          disabled={createExercise.isPending}
         >
-          Log Workout
+          Log Exercise
         </Button>
       </form>
     </Form>

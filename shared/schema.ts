@@ -2,11 +2,17 @@ import { pgTable, text, serial, integer, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const workouts = pgTable("workouts", {
+export const muscleGroups = pgTable("muscle_groups", {
   id: serial("id").primaryKey(),
-  exerciseType: text("exercise_type").notNull(),
-  duration: integer("duration").notNull(), // in minutes
-  intensity: integer("intensity").notNull(), // 1-5 scale
+  name: text("name").notNull().unique(),
+});
+
+export const exercises = pgTable("exercises", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  muscleGroupId: integer("muscle_group_id").notNull(),
+  sets: integer("sets").notNull(),
+  reps: integer("reps").notNull(),
   date: timestamp("date").notNull().defaultNow(),
 });
 
@@ -15,10 +21,10 @@ export const goals = pgTable("goals", {
   description: text("description").notNull(),
   targetValue: integer("target_value").notNull(),
   currentValue: integer("current_value").notNull(),
-  type: text("type").notNull(), // "duration" or "intensity"
+  muscleGroupId: integer("muscle_group_id").notNull(),
 });
 
-export const insertWorkoutSchema = createInsertSchema(workouts).omit({ 
+export const insertExerciseSchema = createInsertSchema(exercises).omit({ 
   id: true,
   date: true 
 });
@@ -27,7 +33,8 @@ export const insertGoalSchema = createInsertSchema(goals).omit({
   id: true 
 });
 
-export type InsertWorkout = z.infer<typeof insertWorkoutSchema>;
-export type Workout = typeof workouts.$inferSelect;
+export type InsertExercise = z.infer<typeof insertExerciseSchema>;
+export type Exercise = typeof exercises.$inferSelect;
 export type InsertGoal = z.infer<typeof insertGoalSchema>;
 export type Goal = typeof goals.$inferSelect;
+export type MuscleGroup = typeof muscleGroups.$inferSelect;

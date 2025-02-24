@@ -1,13 +1,18 @@
 import { 
-  type Workout, type InsertWorkout,
-  type Goal, type InsertGoal 
+  type Exercise, type InsertExercise,
+  type Goal, type InsertGoal,
+  type MuscleGroup 
 } from "@shared/schema";
 
 export interface IStorage {
-  // Workout methods
-  getWorkouts(): Promise<Workout[]>;
-  createWorkout(workout: InsertWorkout): Promise<Workout>;
-  
+  // Exercise methods
+  getExercises(): Promise<Exercise[]>;
+  createExercise(exercise: InsertExercise): Promise<Exercise>;
+  getExercisesByMuscleGroup(muscleGroupId: number): Promise<Exercise[]>;
+
+  // Muscle Group methods
+  getMuscleGroups(): Promise<MuscleGroup[]>;
+
   // Goal methods
   getGoals(): Promise<Goal[]>;
   createGoal(goal: InsertGoal): Promise<Goal>;
@@ -15,31 +20,49 @@ export interface IStorage {
 }
 
 export class MemStorage implements IStorage {
-  private workouts: Map<number, Workout>;
+  private exercises: Map<number, Exercise>;
   private goals: Map<number, Goal>;
-  private workoutId: number;
+  private muscleGroups: Map<number, MuscleGroup>;
+  private exerciseId: number;
   private goalId: number;
 
   constructor() {
-    this.workouts = new Map();
+    this.exercises = new Map();
     this.goals = new Map();
-    this.workoutId = 1;
+    this.muscleGroups = new Map([
+      [1, { id: 1, name: "Legs" }],
+      [2, { id: 2, name: "Chest" }],
+      [3, { id: 3, name: "Back" }],
+      [4, { id: 4, name: "Shoulders" }],
+      [5, { id: 5, name: "Arms" }],
+      [6, { id: 6, name: "Core" }],
+    ]);
+    this.exerciseId = 1;
     this.goalId = 1;
   }
 
-  async getWorkouts(): Promise<Workout[]> {
-    return Array.from(this.workouts.values());
+  async getExercises(): Promise<Exercise[]> {
+    return Array.from(this.exercises.values());
   }
 
-  async createWorkout(workout: InsertWorkout): Promise<Workout> {
-    const id = this.workoutId++;
-    const newWorkout: Workout = {
-      ...workout,
+  async createExercise(exercise: InsertExercise): Promise<Exercise> {
+    const id = this.exerciseId++;
+    const newExercise: Exercise = {
+      ...exercise,
       id,
       date: new Date(),
     };
-    this.workouts.set(id, newWorkout);
-    return newWorkout;
+    this.exercises.set(id, newExercise);
+    return newExercise;
+  }
+
+  async getExercisesByMuscleGroup(muscleGroupId: number): Promise<Exercise[]> {
+    return Array.from(this.exercises.values())
+      .filter(exercise => exercise.muscleGroupId === muscleGroupId);
+  }
+
+  async getMuscleGroups(): Promise<MuscleGroup[]> {
+    return Array.from(this.muscleGroups.values());
   }
 
   async getGoals(): Promise<Goal[]> {
@@ -56,7 +79,7 @@ export class MemStorage implements IStorage {
   async updateGoal(id: number, update: Partial<Goal>): Promise<Goal> {
     const goal = this.goals.get(id);
     if (!goal) throw new Error("Goal not found");
-    
+
     const updatedGoal = { ...goal, ...update };
     this.goals.set(id, updatedGoal);
     return updatedGoal;
