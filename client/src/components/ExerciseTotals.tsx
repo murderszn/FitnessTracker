@@ -26,39 +26,40 @@ export default function ExerciseTotals({ muscleGroupId, muscleGroups }: Exercise
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="card-hover overflow-hidden">
-        <CardHeader className="bg-primary/5 pb-4">
-          <CardTitle className="flex items-center gap-2">
-            <Dumbbell className="h-5 w-5 text-primary" />
+      <Card className="card-hover overflow-hidden stat-card">
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2 text-[hsl(var(--azure))]">
+            <Dumbbell className="h-5 w-5 text-[hsl(var(--tiffany))]" />
             {muscleGroup?.name || 'Unknown'}
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="text-center p-3 rounded-lg bg-muted">
-                <p className="text-2xl font-bold text-primary">{totalSets}</p>
+              <div className="text-center p-3 rounded-lg bg-white/50 shadow-sm">
+                <p className="text-2xl font-bold text-[hsl(var(--azure))]">{totalSets}</p>
                 <p className="text-sm text-muted-foreground">Total Sets</p>
               </div>
-              <div className="text-center p-3 rounded-lg bg-muted">
-                <p className="text-2xl font-bold text-primary">{totalReps}</p>
+              <div className="text-center p-3 rounded-lg bg-white/50 shadow-sm">
+                <p className="text-2xl font-bold text-[hsl(var(--azure))]">{totalReps}</p>
                 <p className="text-sm text-muted-foreground">Total Reps</p>
               </div>
             </div>
 
             <div className="space-y-2">
-              <h4 className="font-medium flex items-center gap-2">
-                <Clock className="h-4 w-4 text-primary" />
+              <h4 className="font-medium flex items-center gap-2 text-[hsl(var(--azure))]">
+                <Clock className="h-4 w-4 text-[hsl(var(--tiffany))]" />
                 Recent Exercises
               </h4>
               <ul className="space-y-2">
                 {exercises?.slice(-3).map((ex) => (
                   <li 
                     key={ex.id} 
-                    className="text-sm p-2 rounded-md bg-muted/50 flex justify-between items-center"
+                    className="text-sm p-2 rounded-md bg-white/40 backdrop-blur-sm
+                             flex justify-between items-center shadow-sm"
                   >
                     <span className="font-medium">{ex.name}</span>
-                    <span className="text-muted-foreground">
+                    <span className="text-[hsl(var(--azure))]">
                       {ex.sets}×{ex.reps} • {format(new Date(ex.date), "MMM d")}
                     </span>
                   </li>

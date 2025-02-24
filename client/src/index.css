@@ -10,6 +10,12 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+
+  :root {
+    --tiffany: 175 85% 50%;
+    --azure: 210 90% 50%;
+    --gold: 45 95% 60%;
+  }
 }
 
 @layer components {
@@ -24,7 +30,7 @@
 
   .nav-link::after {
     @apply content-[''] absolute bottom-0 left-0 w-0 h-[2px] 
-           bg-primary transition-all duration-300;
+           bg-[hsl(var(--tiffany))] transition-all duration-300;
   }
 
   .nav-link:hover::after {
@@ -32,14 +38,25 @@
   }
 
   .nav-link.active {
-    @apply bg-primary/10 text-primary;
+    @apply bg-[hsl(var(--azure))] text-white;
   }
 
   .form-input-transition {
-    @apply transition-all duration-200 focus:ring-2 focus:ring-primary/20;
+    @apply transition-all duration-200 focus:ring-2 focus:ring-[hsl(var(--tiffany))/20];
   }
 
   .button-hover {
-    @apply hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200;
+    @apply hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200
+           bg-gradient-to-r from-[hsl(var(--azure))] to-[hsl(var(--tiffany))]
+           text-white hover:shadow-lg;
+  }
+
+  .stat-card {
+    @apply bg-gradient-to-br from-[hsl(var(--azure))/10] to-[hsl(var(--tiffany))/5]
+           border border-[hsl(var(--tiffany))/20];
+  }
+
+  .gold-accent {
+    @apply text-[hsl(var(--gold))] font-semibold;
   }
 }
