@@ -3,13 +3,16 @@ import { Home, History, Target } from "lucide-react";
 import { motion } from "framer-motion";
 
 const links = [
-  { href: "/", label: "Dashboard", icon: Home },
+  { href: "/dashboard", label: "Dashboard", icon: Home },
   { href: "/history", label: "History", icon: History },
   { href: "/goals", label: "Goals", icon: Target },
 ];
 
 export default function Navigation() {
   const [location] = useLocation();
+
+  // Don't show navigation on landing page
+  if (location === "/") return null;
 
   return (
     <motion.nav 
@@ -21,7 +24,7 @@ export default function Navigation() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <motion.div 
-            className="font-bold text-xl text-primary"
+            className="font-bold text-xl text-[hsl(var(--azure))]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
