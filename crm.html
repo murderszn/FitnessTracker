@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleCRM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        :root {
+            --primary: #000000;
+            --secondary: #333333;
+            --background: #ffffff;
+            --surface: #f5f5f5;
+            --border: #e0e0e0;
+            --text: #1a1a1a;
+            --text-light: #666666;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: 60px 1fr;
+        }
+
+        /* Header Styles */
+        header {
+            grid-column: 1 / -1;
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Sidebar Styles */
+        nav {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-right: 1px solid var(--border);
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section h2 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            text-decoration: none;
+            color: var(--text);
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            background: var(--border);
+        }
+
+        .nav-links a.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main Content Styles */
+        main {
+            padding: 2rem;
+            background: var(--background);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .primary-button {
+            background: var(--primary);
+            color: white;
+        }
+
+        .secondary-button {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-card h3 {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--background);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: var(--background);
+        }
+
+        /* Status Tags */
+        .status-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background: var(--background);
+            margin: 5% auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-modal {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-light);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        /* Page Content Styles */
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">SimpleCRM</div>
+        <div class="user-menu">
+            <span>John Doe</span>
+        </div>
+    </header>
+
+    <nav>
+        <div class="nav-section">
+            <h2>Main Menu</h2>
+            <ul class="nav-links">
+                <li><a href="#" data-page="dashboard" class="active">Dashboard</a></li>
+                <li><a href="#" data-page="contacts">Contacts</a></li>
+                <li><a href="#" data-page="companies">Companies</a></li>
+                <li><a href="#" data-page="deals">Deals</a></li>
+                <li><a href="#" data-page="tasks">Tasks</a></li>
+            </ul>
+        </div>
+        <div class="nav-section">
+            <h2>Reports</h2>
+            <ul class="nav-links">
+                <li><a href="#" data-page="sales-pipeline">Sales Pipeline</a></li>
+                <li><a href="#" data-page="activity-report">Activity Report</a></li>
+                <li><a href="#" data-page="revenue-analytics">Revenue Analytics</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="page-content active">
+            <div class="page-header">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="action-buttons">
+                    <button class="secondary-button">Export</button>
+                    <button class="primary-button">+ New Contact</button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <h3>Total Deals</h3>
+                    <div class="stat-value">127</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Revenue This Month</h3>
+                    <div class="stat-value">$45,289</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Active Contacts</h3>
+                    <div class="stat-value">1,893</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Tasks Due Today</h3>
+                    <div class="stat-value">12</div>
+                </div>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search contacts, companies, or deals...">
+                <button class="secondary-button">Filter</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Contact Name</th>
+                            <th>Company</th>
+                            <th>Deal Value</th>
+                            <th>Status</th>
+                            <th>Last Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Sarah Johnson</td>
+                            <td>Tech Solutions Inc.</td>
+                            <td>$25,000</td>
+                            <td><span class="status-tag status-active">Active</span></td>
+                            <td>Today</td>
+                        </tr>
+                        <tr>
+                            <td>Michael Chen</td>
+                            <td>Global Systems</td>
+                            <td>$18,500</td>
+                            <td><span class="status-tag status-pending">Pending</span></td>
+                            <td>Yesterday</td>
+                        </tr>
+                        <tr>
+                            <td>Emily Davis</td>
+                            <td>Marketing Pro</td>
+                            <td>$32,000</td>
+                            <td><span class="status-tag status-active">Active</span></td>
+                            <td>2 days ago</td>
+                        </tr>
+                        <tr>
+                            <td>Robert Wilson</td>
+                            <td>Data Analytics Co</td>
+                            <td>$45,000</td>
+                            <td><span class="status-tag status-pending">Pending</span></td>
+                            <td>3 days ago</td>
+                        </tr>
+                        <tr>
+                            <td>Lisa Thompson</td>
+                            <td>Cloud Services Ltd</td>
+                            <td>$28,500</td>
+                            <td><span class="status-tag status-active">Active</span></td>
+                            <td>1 week ago</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Contacts Page -->
+        <div id="contacts" class="page-content">
+            <div class="page-header">
+                <h1 class="page-title">Contacts</h1>
+                <div class="action-buttons">
+                    <button class="primary-button" onclick="openModal('new-contact-modal')">+ New Contact</button>
+                </div>
+            </div>
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search contacts..." onkeyup="searchContacts(this.value)">
+                <button class="secondary-button" onclick="toggleFilters()">Filter</button>
+            </div>
+            <div class="table-container">
+                <table id="contacts-table">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('contacts-table', 0)">Name ↕</th>
+                            <th onclick="sortTable('contacts-table', 1)">Email</th>
+                            <th onclick="sortTable('contacts-table', 2)">Phone</th>
+                            <th onclick="sortTable('contacts-table', 3)">Company</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contacts-tbody"></tbody>
+                </table>
+                <div class="pagination" id="contacts-pagination"></div>
+            </div>
+        </div>
+
+        <!-- Companies Page -->
+        <div id="companies" class="page-content">
+            <div class="page-header">
+                <h1 class="page-title">Companies</h1>
+                <div class="action-buttons">
+                    <button class="primary-button" onclick="openModal('new-company-modal')">+ New Company</button>
+                </div>
+            </div>
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search companies..." onkeyup="searchCompanies(this.value)">
+                <button class="secondary-button">Filter</button>
+            </div>
+            <div class="table-container">
+                <table id="companies-table">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('companies-table', 0)">Company Name ↕</th>
+                            <th onclick="sortTable('companies-table', 1)">Industry</th>
+                            <th onclick="sortTable('companies-table', 2)">Location</th>
+                            <th onclick="sortTable('companies-table', 3)">Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="companies-tbody"></tbody>
+                </table>
+                <div class="pagination" id="companies-pagination"></div>
+            </div>
+        </div>
+
+        <!-- Deals Page -->
+        <div id="deals" class="page-content">
+            <div class="page-header">
+                <h1 class="page-title">Deals</h1>
+                <div class="action-buttons">
+                    <button class="primary-button" onclick="openModal('new-deal-modal')">+ New Deal</button>
+                </div>
+            </div>
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search deals..." onkeyup="searchDeals(this.value)">
+                <button class="secondary-button">Filter</button>
+            </div>
+            <div class="table-container">
+                <table id="deals-table">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('deals-table', 0)">Deal Name ↕</th>
+                            <th onclick="sortTable('deals-table', 1)">Company</th>
+                            <th onclick="sortTable('deals-table', 2)">Value</th>
+                            <th onclick="sortTable('deals-table', 3)">Stage</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deals-tbody"></tbody>
+                </table>
+                <div class="pagination" id="deals-pagination"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <div id="new-contact-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>New Contact</h2>
+                <span class="close-modal" onclick="closeModal('new-contact-modal')">&times;</span>
+            </div>
+            <form id="new-contact-form" onsubmit="handleNewContact(event)">
+                <div class="form-group">
+                    <label for="contact-name">Name</label>
+                    <input type="text" id="contact-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-email">Email</label>
+                    <input type="email" id="contact-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-phone">Phone</label>
+                    <input type="tel" id="contact-phone">
+                </div>
+                <div class="form-group">
+                    <label for="contact-company">Company</label>
+                    <select id="contact-company" required>
+                        <option value="">Select Company</option>
+                    </select>
+                </div>
+                <button type="submit" class="primary-button">Create Contact</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sample Data
+        let contacts = [
+            { id: 1, name: 'Sarah Johnson', email: 'sarah@techsolutions.com', phone: '555-0123', company: 'Tech Solutions Inc.' },
+            { id: 2, name: 'Michael Chen', email: 'michael@globalsystems.com', phone: '555-0124', company: 'Global Systems' },
+            // Add more sample contacts
+        ];
+
+        let companies = [
+            { id: 1, name: 'Tech Solutions Inc.', industry: 'Technology', location: 'New York', status: 'Active' },
+            { id: 2, name: 'Global Systems', industry: 'Software', location: 'San Francisco', status: 'Active' },
+            // Add more sample companies
+        ];
+
+        let deals = [
+            { id: 1, name: 'Enterprise Solution', company: 'Tech Solutions Inc.', value: 25000, stage: 'Negotiation' },
+            { id: 2, name: 'Software License', company: 'Global Systems', value: 18500, stage: 'Proposal' },
+            // Add more sample deals
+        ];
+
+        // Navigation
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = link.getAttribute('data-page');
+                showPage(pageId);
+            });
+        });
+
+        function showPage(pageId) {
+            // Update navigation active state
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-page') === pageId) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Show selected page content
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+
+            // Load page data
+            switch(pageId) {
+                case 'contacts':
+                    loadContacts();
+                    break;
+                case 'companies':
+                    loadCompanies();
+                    break;
+                case 'deals':
+                    loadDeals();
+                    break;
+            }
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Table Functions
+        function sortTable(tableId, columnIndex) {
+            const table = document.getElementById(tableId);
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                const aValue = a.cells[columnIndex].textContent;
+                const bValue = b.cells[columnIndex].textContent;
+                return aValue.localeCompare(bValue);
+            });
+
+            tbody.innerHTML = '';
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        // Data Loading Functions
+        function loadContacts() {
+            const tbody = document.getElementById('contacts-tbody');
+            tbody.innerHTML = contacts.map(contact => `
+                <tr>
+                    <td>${contact.name}</td>
+                    <td>${contact.email}</td>
+                    <td>${contact.phone}</td>
+                    <td>${contact.company}</td>
+                    <td>
+                        <button class="secondary-button" onclick="editContact(${contact.id})">Edit</button>
+                        <button class="secondary-button" onclick="deleteContact(${contact.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function loadCompanies() {
+            const tbody = document.getElementById('companies-tbody');
+            tbody.innerHTML = companies.map(company => `
+                <tr>
+                    <td>${company.name}</td>
+                    <td>${company.industry}</td>
+                    <td>${company.location}</td>
+                    <td><span class="status-tag status-active">${company.status}</span></td>
+                    <td>
+                        <button class="secondary-button" onclick="editCompany(${company.id})">Edit</button>
+                        <button class="secondary-button" onclick="deleteCompany(${company.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function loadDeals() {
+            const tbody = document.getElementById('deals-tbody');
+            tbody.innerHTML = deals.map(deal => `
+                <tr>
+                    <td>${deal.name}</td>
+                    <td>${deal.company}</td>
+                    <td>$${deal.value.toLocaleString()}</td>
+                    <td>${deal.stage}</td>
+                    <td>
+                        <button class="secondary-button" onclick="editDeal(${deal.id})">Edit</button>
+                        <button class="secondary-button" onclick="deleteDeal(${deal.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Form Handling
+        function handleNewContact(event) {
+            event.preventDefault();
+            const newContact = {
+                id: contacts.length + 1,
+                name: document.getElementById('contact-name').value,
+                email: document.getElementById('contact-email').value,
+                phone: document.getElementById('contact-phone').value,
+                company: document.getElementById('contact-company').value
+            };
+            contacts.push(newContact);
+            loadContacts();
+            closeModal('new-contact-modal');
+            event.target.reset();
+        }
+
+        // Search Functions
+        function searchContacts(query) {
+            const filtered = contacts.filter(contact => 
+                contact.name.toLowerCase().includes(query.toLowerCase()) ||
+                contact.email.toLowerCase().includes(query.toLowerCase()) ||
+                contact.company.toLowerCase().includes(query.toLowerCase())
+            );
+            const tbody = document.getElementById('contacts-tbody');
+            tbody.innerHTML = filtered.map(contact => `
+                <tr>
+                    <td>${contact.name}</td>
+                    <td>${contact.email}</td>
+                    <td>${contact.phone}</td>
+                    <td>${contact.company}</td>
+                    <td>
+                        <button class="secondary-button" onclick="editContact(${contact.id})">Edit</button>
+                        <button class="secondary-button" onclick="deleteContact(${contact.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadContacts();
+            loadCompanies();
+            loadDeals();
+        });
+    </script>
+</body>
+</html> 

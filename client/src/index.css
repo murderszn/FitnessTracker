@@ -1,131 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply font-sans antialiased bg-gradient-to-br from-white to-slate-50 text-slate-800;
-  }
-
   :root {
-    --background: 210 40% 98%;
-    --foreground: 215 25% 27%;
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
-    --primary: 199 89% 48%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 215 25% 27%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 25% 40%;
-    --accent: 199 89% 48%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 215 25% 27% / 0.1;
-    --input: 215 25% 27% / 0.1;
-    --ring: 199 89% 48%;
-    --radius: 1rem;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+  }
+
+  html {
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
   }
 }
 
 @layer components {
-  .card-hover {
-    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1
-           hover:shadow-blue-500/10;
+  .card {
+    @apply bg-white rounded-lg shadow p-4;
   }
 
-  .glass-card {
-    @apply backdrop-blur-xl bg-white/60 border border-white/20 shadow-xl
-           hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]
-           rounded-2xl hover:bg-white/80;
+  .button {
+    @apply inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium;
   }
 
-  .glass-button {
-    @apply px-4 py-2 rounded-full font-medium
-           bg-gradient-to-r from-blue-500 to-sky-500
-           hover:from-blue-600 hover:to-sky-600
-           shadow-md hover:shadow-xl hover:shadow-blue-500/20
-           transition-all duration-300 hover:scale-[1.02]
-           active:scale-[0.98] disabled:opacity-50
-           text-white;
+  .button.primary {
+    @apply text-white bg-primary-600 hover:bg-primary-700;
   }
 
-  .glass-button-secondary {
-    @apply px-4 py-2 rounded-full font-medium
-           bg-white/60 backdrop-blur-xl border border-white/20
-           hover:bg-white/80 hover:border-white/40
-           shadow-md hover:shadow-lg
-           transition-all duration-300 hover:scale-[1.02]
-           active:scale-[0.98] disabled:opacity-50
-           text-slate-700 hover:text-slate-900;
+  .button.secondary {
+    @apply text-gray-700 bg-white border-gray-300 hover:bg-gray-50;
   }
 
-  .form-input {
-    @apply bg-white/60 border border-white/20 rounded-xl px-4 py-2
-           focus:outline-none focus:ring-2 focus:ring-blue-500/20
-           placeholder:text-slate-400 text-slate-700
-           transition-all duration-200 backdrop-blur-xl;
+  .input-field {
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm;
   }
 
-  .gradient-heading {
-    @apply font-bold bg-clip-text text-transparent
-           bg-gradient-to-r from-blue-600 to-sky-600;
+  .status-tag {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
+}
 
-  .gradient-border {
-    @apply relative rounded-2xl p-[1px] bg-gradient-to-r from-blue-500 to-sky-500;
+:root {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
   }
-
-  .gradient-border > * {
-    @apply bg-white rounded-2xl;
+  a:hover {
+    color: #747bff;
   }
-
-  .stat-card {
-    @apply glass-card p-6 flex flex-col gap-4;
-  }
-
-  .nav-item {
-    @apply flex items-center px-4 py-2 rounded-full text-sm font-medium
-           transition-all duration-200 hover:bg-white/60
-           text-slate-600 hover:text-slate-900;
-  }
-
-  .nav-item.active {
-    @apply bg-gradient-to-r from-blue-500 to-sky-500 text-white
-           shadow-md;
-  }
-
-  .chart-container {
-    @apply rounded-2xl overflow-hidden backdrop-blur-xl
-           bg-white/60 border border-white/20 p-4
-           shadow-lg;
-  }
-
-  .scrollbar-custom {
-    @apply scrollbar-thin scrollbar-track-slate-100
-           scrollbar-thumb-slate-200 hover:scrollbar-thumb-slate-300;
-  }
-
-  .animate-gradient {
-    @apply relative overflow-hidden;
-    &::before {
-      @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent;
-      content: '';
-      transform: translateX(-100%);
-      animation: shimmer 2s infinite;
-    }
-  }
-
-  @keyframes shimmer {
-    100% {
-      transform: translateX(100%);
-    }
+  button {
+    background-color: #f9f9f9;
   }
 }
